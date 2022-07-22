@@ -5,3 +5,14 @@ c:\users\iman\documents\visual studio 2010\Projects\AIproject\AIproject\obj\x86\
 c:\users\iman\documents\visual studio 2010\Projects\AIproject\AIproject\obj\x86\Debug\AIproject.exe
 c:\users\iman\documents\visual studio 2010\Projects\AIproject\AIproject\obj\x86\Debug\AIproject.pdb
 C:\Users\iman\Documents\Visual Studio 2010\Projects\AIproject\AIproject\obj\x86\Debug\AIproject.csproj.GenerateResource.Cache
+C:\Users\ayakh\Source\Repos\PathFinding\AIproject\bin\Debug\AIproject.exe.config
+C:\Users\ayakh\Source\Repos\PathFinding\AIproject\bin\Debug\AIproject.exe
+C:\Users\ayakh\Source\Repos\PathFinding\AIproject\bin\Debug\AIproject.pdb
+C:\Users\ayakh\Source\Repos\PathFinding\AIproject\obj\x86\Debug\AIproject.csproj.AssemblyReference.cache
+C:\Users\ayakh\Source\Repos\PathFinding\AIproject\obj\x86\Debug\AIproject.csproj.SuggestedBindingRedirects.cache
+C:\Users\ayakh\Source\Repos\PathFinding\AIproject\obj\x86\Debug\AIproject.Form1.resources
+C:\Users\ayakh\Source\Repos\PathFinding\AIproject\obj\x86\Debug\AIproject.Properties.Resources.resources
+C:\Users\ayakh\Source\Repos\PathFinding\AIproject\obj\x86\Debug\AIproject.csproj.GenerateResource.cache
+C:\Users\ayakh\Source\Repos\PathFinding\AIproject\obj\x86\Debug\AIproject.csproj.CoreCompileInputs.cache
+C:\Users\ayakh\Source\Repos\PathFinding\AIproject\obj\x86\Debug\AIproject.exe
+C:\Users\ayakh\Source\Repos\PathFinding\AIproject\obj\x86\Debug\AIproject.pdb

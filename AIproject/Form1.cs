@@ -8,35 +8,36 @@ using System.Text;
 using System.Windows.Forms;
 using System.Threading;
 using System.IO;
-
+using System.Diagnostics;
 namespace AIproject
 {
     public partial class Form1 : Form
     {
         public problem P;
-        public Form1()
+        public Form1() // to show the user interface 
         {
             InitializeComponent();
         }
 
         private void Online_Click(object sender, EventArgs e)
-        {
-            LRTA A = new LRTA(P);
-            state CS = P.firststate;
-            draw_world(P.goal,P.firststate);
+        { 
+            // when clicking on the online button
+            LRTA A = new LRTA(P); // A is an object that has all info about the world startState, goalState, Obstacles 
+            state CS = P.firststate; // assigne the first state as a current state ///////////choufi ila ytbdl dhuka raho 100 0
+            draw_world(P.goal,P.firststate); // they call the same function that draws the world which is wierd because it draws the world once again!
             int i = 0;
-            float distance = 0;
+            float distance = 0; // the distance that the agent took to reach the goal
             while(true){
-                int CA = A.LRTA_Agent(CS);
-                if (CA == 8)
+                int CA = A.LRTA_Agent(CS); // CA is the nember of the cell that the agent will go to that has has the min h
+                if (CA == 8) // why 8 ?????
                     break;
                 actions acts = new actions(CS);
                 state next = acts[CA];
-                distance += problem.dist(CS, next) / problem.BlockSize;
+                distance += problem.dist(CS, next) / problem.BlockSize; // cost action
                 Point t = new Point(next.X + 2, next.Y+2);
-                CS = next;
-                Thread.Sleep(200);
-                Agent.Location = t;
+                CS = next; // the current state is changed to the next 
+                Thread.Sleep(200);         // for what ??
+                Agent.Location = t; // this what moves the agent location to the best state 
                 Agent.Update();
                 i++;
             }
@@ -50,17 +51,17 @@ namespace AIproject
             g.Clear(Color.White);
             Agent.Location = new Point(S.X + 2, S.Y + 2);
             Agent.Update();
-            foreach (obstacle ob in problem.obs)
+            foreach (obstacle ob in problem.obs) // draws black cells in the user interface 
             {
                 g.FillRectangle(Brushes.Black, ob.ob.X, ob.ob.Y, problem.BlockSize, problem.BlockSize);
             }
-            for (int i = 0; i <= problem.width + problem.BlockSize; i += problem.BlockSize)
+            for (int i = 0; i <= problem.width + problem.BlockSize; i += problem.BlockSize) // this loop to draw cols
                 g.DrawLine(pen1, i, 0, i, problem.height + problem.BlockSize);
-            for (int i = 0; i <= problem.height+problem.BlockSize; i += problem.BlockSize)
+            for (int i = 0; i <= problem.height+problem.BlockSize; i += problem.BlockSize) // this for to draw lines
                 g.DrawLine(pen1, 0, i, problem.width + problem.BlockSize, i);
-            pen = new Pen(Color.Red, 2);
+            pen = new Pen(Color.Red, 2); // this to draw the red circle 'goal'
             g.DrawEllipse(pen, G.X, G.Y, problem.BlockSize, problem.BlockSize);
-        }
+        } //draw the world "grid"
 
         private void Astar_Click(object sender, EventArgs e)
         {
@@ -95,7 +96,7 @@ namespace AIproject
                     if (solution[0].lastaction == 9)
                         MessageBox.Show("out of memory");
 
-        }
+        } // when choosing A* button
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -136,7 +137,7 @@ namespace AIproject
                     if (solution[0].lastaction == 9)
                         MessageBox.Show("out of memory");
 
-        }
+        } // when choosing RBFS button
 
         private void SMA_Click(object sender, EventArgs e)
         {
@@ -171,28 +172,29 @@ namespace AIproject
                 else
                     if (solution[0].lastaction == 9)
                         MessageBox.Show("out of memory");
-        }
+        } // when choosing SMA button
 
         private void Load_Click(object sender, EventArgs e)
         {
             problem.BlockSize = 50;
-            OpenFileDialog OFD = new OpenFileDialog();
+            OpenFileDialog OFD = new OpenFileDialog(); //opens the file explorer
 
             DialogResult result = OFD.ShowDialog(); // Show the dialog.
             OFD.Title = "Please select input file";
             if (result == DialogResult.OK) // Test result.
             {
-                string file = OFD.FileName;
+                string file = OFD.FileName;  // file name
+                Debug.WriteLine("Debug Information-Product Starting ");                // 
                 try
                 {
-                    problem.sr = new StreamReader(file);
-                    P = new problem();
+                    problem.sr = new StreamReader(file); // reads the file 
+                    P = new problem(); // identifie the problem 
                     Agent.Size = new Size(problem.BlockSize - 2, problem.BlockSize - 2);
                     draw_world(P.goal, P.firststate);
-                    this.Online.Enabled = true;
-                    this.Astar.Enabled = true;
-                    this.RBFS.Enabled = true;
-                    this.SMA.Enabled = true;
+                    this.Online.Enabled = true; // to activate the online button
+                    this.Astar.Enabled = true;  // to activate the Astar button
+                    this.RBFS.Enabled = true;   // to activate the RBFS button
+                    this.SMA.Enabled = true;    // to activate the SMA button
                 }
                 catch (IOException ex)
                 {
@@ -246,7 +248,7 @@ namespace AIproject
         public float f;
         public float g = 0;
         public int d = 0;
-        private Point P;
+        private Point P; // a point has x and y 
         public state parent;
         public int lastaction;
         public void setparent(state Parent)
@@ -277,9 +279,9 @@ namespace AIproject
     }
     public class actions
     {
-        state CS;
-        public actions(state cs){
-            CS = cs;
+        state CS; //current state
+        public actions(state cs){// action for the current state 
+            CS = cs; //save the current state 'cs' in the CS
         }
         state next;
         public state this[int action]
@@ -288,39 +290,41 @@ namespace AIproject
             {
                 switch (action)
                 {
-                    case 0:
-                        next = (CS.X != 0) ? new state(CS.X - problem.BlockSize, CS.Y) : CS;
+                    case 0://cell on the left (Cs.X- 50)
+                        next = (CS.X != 0) ? new state(CS.X - problem.BlockSize, CS.Y) : CS; 
                         break;
-                    case 1:
-                        next = (CS.X != 0 && CS.Y != 0) ? new state(CS.X - problem.BlockSize, CS.Y - problem.BlockSize) : CS;
+                    case 1://upper left
+                        next = (CS.X != 0 && CS.Y != 0) ? new state(CS.X - problem.BlockSize, CS.Y - problem.BlockSize) : CS; 
                         break;
-                    case 2:
+                    case 2:// the upper cell
                         next = (CS.Y != 0) ? new state(CS.X, CS.Y - problem.BlockSize) : CS;
                         break;
-                    case 3:
+                    case 3: //the upper right
                         next = (CS.X != problem.width && CS.Y != 0) ? new state(CS.X + problem.BlockSize, CS.Y - problem.BlockSize) : CS;
                         break;
-                    case 4:
+                    case 4://right cell
                         next = (CS.X != problem.width) ? new state(CS.X + problem.BlockSize, CS.Y) : CS;
                         break;
-                    case 5:
+                    case 5://down right 
                         next = (CS.X != problem.width && CS.Y != problem.height) ? new state(CS.X + problem.BlockSize, CS.Y + problem.BlockSize) : CS;
                         break;
-                    case 6:
+                    case 6:// down cell
                         next = (CS.Y != problem.height) ? new state(CS.X, CS.Y + problem.BlockSize) : CS;
                         break;
-                    case 7:
+                    case 7: // left down
                         next = (CS.X != 0 && CS.Y != problem.height) ? new state(CS.X - problem.BlockSize, CS.Y + problem.BlockSize) : CS;
                         break;
                 }
-                bool b = true;
+                bool b = true; // means that this state is reachable 
                 foreach (obstacle o in problem.obs)
                     if (o.pointinobs(next))
-                        b = false;
+                        b = false; // if the state coordinates matches one of the obstacle coordinates than b=false 
                 return b?next:CS;
             }
         }
     }
+    /********************************* Problem algotithm  ******************************************/
+
     public class problem
     {
         public state firststate;
@@ -332,24 +336,32 @@ namespace AIproject
         public static StreamReader sr;
         public problem()
         {
-            string[] world = sr.ReadLine().Split(',');
+            string[] world = sr.ReadLine().Split(',');   //size of blocks world is a string
             if (Convert.ToInt32(world[1]) > 1550 / BlockSize)
                 BlockSize = 1550 / Convert.ToInt32(world[1]);
             if (Convert.ToInt32(world[0]) > 650 / BlockSize)
                 BlockSize = 650 / Convert.ToInt32(world[0]);
-            width = (Convert.ToInt32(world[1]) -1 )*BlockSize;
-            height = (Convert.ToInt32(world[0]) - 1)*BlockSize;
+            width = (Convert.ToInt32(world[1]) -1 )*BlockSize; // width * 50 
+            height = (Convert.ToInt32(world[0]) - 1)*BlockSize; // height * 50 
+
+            // same for the start state 
             string[] Start = sr.ReadLine().Split(',');
             firststate = new state((Convert.ToInt32(Start[0])-1) * BlockSize, (Convert.ToInt32(Start[1])-1) * BlockSize);
-            if (firststate.X > width || firststate.Y > height || firststate.X < 0 || firststate.Y <0)
+
+            // check if the start state is in the grid or not 
+            if (firststate.X > width || firststate.Y > height || firststate.X < 0 || firststate.Y <0) 
             {
                 MessageBox.Show("Start Point is out of the range of the world");
             }
+
+            // same for the end state 
             string[] End = sr.ReadLine().Split(',');
             goal = new state((Convert.ToInt32(End[0])-1) * BlockSize, (Convert.ToInt32(End[1])-1) * BlockSize);
             if (goal.X > width || goal.Y > height || goal.X < 0 || goal.Y < 0)
                 MessageBox.Show("Goal Point is out of the range of the world");
-            int n = Convert.ToInt32(sr.ReadLine());
+
+            //check the obstacles 
+            int n = Convert.ToInt32(sr.ReadLine()); // reads how many obstacles we have which is mentioned in the txt file 
             string[] obstacles = sr.ReadLine().Split('-');
             obs = new obstacle[n];
             for (int i = 0; i < n; i++)
@@ -360,9 +372,9 @@ namespace AIproject
             }
             sr.Close();
         }
-        public static float dist(state s, state s1)
+        public static float dist(state s, state s1) // calculate the Manhatten distance between 2 states  
         {
-            return (float)Math.Sqrt(Math.Pow(s.Y - s1.Y, 2) + Math.Pow(s.X - s1.X, 2));
+            return (float)Math.Sqrt(Math.Pow(s.Y - s1.Y, 2) + Math.Pow(s.X - s1.X, 2)); // sqrt((x1-x2)^2+(y1-y2)^2)
         }
         public state[] Succesorfunction(state currentstate)
         {
@@ -381,15 +393,20 @@ namespace AIproject
             }
             return s;
         }
-        public bool GoalTest(state cs)
+
+        public bool GoalTest(state cs)  
         {
             return (cs.X == goal.X && cs.Y == goal.Y);
-        }
+        } //check if the current state is a goal or not 
     }
+
+    /******************************** End .Problem algotithm  **************************************/
+
+    /********************************* LRTA algotithm  *****************************************/
     public class LRTA
     {
         problem P;
-        float[,] H = new float[problem.width+1,problem.height+1];
+        float[,] H = new float[problem.width+1,problem.height+1];  //dimension of the grid 
         state s;
         int a;
         state[, ,] result = new state[8,problem.width+1,problem.height+1];
@@ -397,20 +414,21 @@ namespace AIproject
         {
             P = p;
         }
-        private float h(state s)
+        private float h(state s) // calculate the h value of a state 
         {
-            return problem.dist(s, P.goal);
+            return problem.dist(s, P.goal); 
         }
         private float LRTA_Cost(state s, state s1,state n)
         {
             if (s1 == null)
-                return h(n);
+                return h(n); //calculate the heuristic value of the next state 
             else
                 return problem.dist(s, s1) + H[s1.X, s1.Y] + 500;//to penaltalize repeating moves
         }
+
         public int LRTA_Agent(state s1)
         {
-            if(P.GoalTest(s1))
+            if(P.GoalTest(s1)) // if the current state is a goal state 
                 return 8;
             if (H[s1.X, s1.Y] == 0)
                 H[s1.X, s1.Y] = h(s1);
@@ -430,22 +448,25 @@ namespace AIproject
             }
             float min1 = 99999999999;
             int b = 0;
-            for (int i = 0; i <= 7; i++)
+            for (int i = 0; i <= 7; i++) // eight iterations which are possible states from current state, am I right ??
             {
                 actions Acts = new actions(s1);
                 if (Acts[i] == s1)
                     continue;
-                if (LRTA_Cost(s1, result[i, s1.X, s1.Y], Acts[i]) < min1)
+                if (LRTA_Cost(s1, result[i, s1.X, s1.Y], Acts[i]) < min1) // if LRTS cost < min1 result[8,x,y]of current state 
                 {
                     min1 = LRTA_Cost(s1, result[i, s1.X, s1.Y], Acts[i]);
                     b = i;
                 }
             }
-            a = b;
-            s = s1;
+            a = b; // number of the cell that has the min h  
+            s = s1; // s1 is the current state 
             return a;
         }
     }
+    /*********************************** End LRTA algotithm  ********************************************/
+
+    /****************************************** Heap  **********************************************/
     class Heap
     {
         private state[] heapArray;
@@ -512,8 +533,12 @@ namespace AIproject
             heapArray[index] = top;
         }
     }
+
+    /************************************** ASTAR ****************************************************/
     public class AStar
     {
+
+        // define the problem
         problem P;
         public AStar(problem currentP)
         {
@@ -523,6 +548,8 @@ namespace AIproject
         {
             return problem.dist(current, P.goal)/problem.BlockSize;
         }
+
+        /*********************************** AS Algorithm  **********************************************/
         public state[] AS()
         {
             Heap fring = new Heap(10000000);
@@ -567,11 +594,23 @@ namespace AIproject
                     }
             }
         }
+
+        /*********************************** AS Algorithm  **********************************************/
+
+
+
+        /********************** RecursiveBestFirstSearch Algorithm  *************************************/
         public state[] RecursiveBestFirstSearch()
         {
             float f;
             return RBFS(P.firststate, 999999999999,out f);
         }
+
+        /********************** End RecursiveBestFirstSearch Algorithm  *********************************/
+
+
+
+        /************************************ RBFS Algorithm  *******************************************/
         public state[] RBFS(state a , float f_limit,out float f_cost)
         {
             if (P.GoalTest(a))
@@ -638,6 +677,12 @@ namespace AIproject
                 if (result[0].lastaction != 8) { f_cost = 0; return result; }
             }
         }
+
+        /************************************ End RBFS Algorithm  **************************************/
+
+
+
+        /************************************ SMAStar Algorithm  ***************************************/
         public state[] SMAStar()
         {
                 int max_depth = 40;
@@ -685,6 +730,14 @@ namespace AIproject
                         }
                 }
         }
+
+        /********************************** End SMAStar Algorithm  *************************************/
+
     }
 
 }
+
+
+
+//they keep the 1st state and the goal state but they change the current state
+//calculate the the distense by every action made 
